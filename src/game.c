@@ -48,7 +48,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR pCmdLin
 
     MSG msg = {0};
     while (TRUE) {
-        int counter = 0;
+        //int counter = 0;
         if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
             if (msg.message == WM_QUIT) {
             break;
@@ -58,13 +58,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR pCmdLin
             DispatchMessage(&msg);
         }
         else {
-            ++counter;
-            if (counter > 1000)
-            {
-                counter = 0;
-                currentBackgroundColor = (currentBackgroundColor == RGB(0, 0, 0)) ? RGB(255, 255, 255) : RGB(0, 0, 0);
-                InvalidateRect(hwnd, NULL, TRUE);
-            }
+           
+            
+            Sleep(1000);
         }
 
         
@@ -88,9 +84,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hwnd, &ps);
             HBRUSH brush = CreateSolidBrush(currentBackgroundColor);
-            RECT rect;
-            GetClientRect(hwnd, &rect);
-            FillRect(hdc, &rect, brush);
+           
+            FillRect(hdc, &ps.rcPaint, brush);
             DeleteObject(brush);
             EndPaint(hwnd, &ps);
         }
