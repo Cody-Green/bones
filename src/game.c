@@ -1,6 +1,7 @@
 #include <windows.h>
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+COLORREF currentBackgroundColor = RGB(0, 0, 0);
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR pCmdLine, int nCmdShow)
 {
@@ -48,23 +49,25 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR pCmdLin
     MSG msg = {0};
     while (TRUE) {
         int counter = 0;
-        while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-            
+        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+            if (msg.message == WM_QUIT) {
+            break;
+            }
+
             TranslateMessage(&msg);
             DispatchMessage(&msg);
+        }
+        else {
             ++counter;
             if (counter > 1000)
             {
                 counter = 0;
-                wc.hbrBackground = (wc.hbrBackground == (HBRUSH)COLOR_WINDOW) ? 
-                    (HBRUSH)COLOR_WINDOW + 1 : (HBRUSH)COLOR_WINDOW;
+                currentBackgroundColor = (currentBackgroundColor == RGB(0, 0, 0)) ? RGB(255, 255, 255) : RGB(0, 0, 0);
                 InvalidateRect(hwnd, NULL, TRUE);
             }
         }
 
-        if (msg.message == WM_QUIT) {
-            break;
-        }
+        
     }
     return 0;
 }
@@ -80,6 +83,17 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         case WM_CLOSE:
             DestroyWindow(hwnd);
             return 0;
+        case WM_PAINT:
+        {
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint(hwnd, &ps);
+            HBRUSH brush = CreateSolidBrush(currentBackgroundColor);
+            RECT rect;
+            GetClientRect(hwnd, &rect);
+            FillRect(hdc, &rect, brush);
+            DeleteObject(brush);
+            EndPaint(hwnd, &ps);
+        }
 
         default:
             return DefWindowProc(hwnd, uMsg, wParam, lParam);
