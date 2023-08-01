@@ -2,11 +2,11 @@
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR pCmdLine, int nCmdShow)
 {
     const wchar_t CLASS_NAME[]  = L"Sample Window Class";
 
-    WNDCLASS wc;
+    WNDCLASSEXW wc;
 
     wc.lpfnWndProc   = WindowProc;
     wc.hInstance     = hInstance;
