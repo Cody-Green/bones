@@ -45,13 +45,17 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR pCmdLin
     ShowWindow(hwnd, nCmdShow);
     UpdateWindow(hwnd);
 
-    MSG msg;
-    while (GetMessage(&msg, NULL, 0, 0))
-    {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-    }
+    MSG msg = {0};
+    while (TRUE) {
+        while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
 
+        if (msg.message == WM_QUIT) {
+            break;
+        }
+    }
     return 0;
 }
 
