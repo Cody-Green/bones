@@ -12,7 +12,8 @@
                 "-lkernel32",
                 "-luser32",
                 "-lgdi32",
-                "-mwindows"
+                "-mwindows",
+                "-municode"
             ],
             "group": "build"
         },

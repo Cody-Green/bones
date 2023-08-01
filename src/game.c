@@ -4,7 +4,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR pCmdLine, int nCmdShow)
 {
-    const wchar_t CLASS_NAME[]  = L"Sample Window Class";
+    const wchar_t CLASS_NAME[]  = L"GameClass";
 
     WNDCLASSEXW wc;
 
@@ -12,7 +12,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR pCmdLin
     wc.hInstance     = hInstance;
     wc.lpszClassName = CLASS_NAME;
 
-    RegisterClass(&wc);
+    RegisterClassExW(&wc);
 
     HWND hwnd = CreateWindowExW(
         0,
