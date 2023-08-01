@@ -6,17 +6,25 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR pCmdLin
 {
     const wchar_t CLASS_NAME[]  = L"GameClass";
 
-    WNDCLASSEXW wc;
-
+    WNDCLASSEXW wc = {0};
+    wc.cbSize        = sizeof(WNDCLASSEXW);
     wc.lpfnWndProc   = WindowProc;
     wc.hInstance     = hInstance;
     wc.lpszClassName = CLASS_NAME;
+    wc.hbrBackground = (HBRUSH) COLOR_WINDOW;
 
-    ATOM regResult = RegisterClassExW(&wc);
-    if (!regResult) {
-        MessageBoxW(NULL, L"Failed to register window class", L"Error", MB_ICONERROR);
+    if (!RegisterClassExW(&wc))
+    {
+        // If you want a more detailed error message:
+        DWORD error = GetLastError();
+        WCHAR errorMessage[512];
+        FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM, NULL, error,
+                    0, errorMessage, sizeof(errorMessage)/sizeof(WCHAR), NULL);
+        MessageBoxW(NULL, errorMessage, L"Error", MB_ICONERROR);
+
         return 0;
     }
+
     HWND hwnd = CreateWindowExW(
         0,
         CLASS_NAME,
