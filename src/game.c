@@ -47,9 +47,19 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR pCmdLin
 
     MSG msg = {0};
     while (TRUE) {
+        int counter = 0;
         while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+            
             TranslateMessage(&msg);
             DispatchMessage(&msg);
+            ++counter;
+            if (counter > 1000)
+            {
+                counter = 0;
+                wc.hbrBackground = (wc.hbrBackground == (HBRUSH)COLOR_WINDOW) ? 
+                    (HBRUSH)COLOR_WINDOW + 1 : (HBRUSH)COLOR_WINDOW;
+                InvalidateRect(hwnd, NULL, TRUE);
+            }
         }
 
         if (msg.message == WM_QUIT) {
