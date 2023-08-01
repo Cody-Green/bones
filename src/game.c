@@ -12,8 +12,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR pCmdLin
     wc.hInstance     = hInstance;
     wc.lpszClassName = CLASS_NAME;
 
-    RegisterClassExW(&wc);
-
+    ATOM regResult = RegisterClassExW(&wc);
+    if (!regResult) {
+        MessageBoxW(NULL, L"Failed to register window class", L"Error", MB_ICONERROR);
+        return 0;
+    }
     HWND hwnd = CreateWindowExW(
         0,
         CLASS_NAME,
@@ -26,12 +29,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR pCmdLin
         NULL
     );
 
-    if (hwnd == NULL)
-    {
+    if (!hwnd) {
+        MessageBoxW(NULL, L"Failed to create window", L"Error", MB_ICONERROR);
         return 0;
     }
 
     ShowWindow(hwnd, nCmdShow);
+    UpdateWindow(hwnd);
 
     MSG msg;
     while (GetMessage(&msg, NULL, 0, 0))
