@@ -115,7 +115,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         }
         case WM_MOUSEMOVE:
         {
-            OutputDebugStringW(L"Mouse Moved!\n");
+            int mouseX = LOWORD(lParam);
+            int mouseY = HIWORD(lParam);
+            OutputDebugStringA(L"Mouse Moved!\n");
             break;
         }
         default:
