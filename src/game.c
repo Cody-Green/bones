@@ -99,7 +99,24 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             }
             break;
         }
-
+        case WM_LBUTTONDOWN:
+        {
+            OutputDebugStringW(L"L_BUTTON!\n");
+            currentBackgroundColor = (currentBackgroundColor == RGB(255, 0, 0)) ? RGB(0, 0, 0) : RGB(255, 0, 0);
+            InvalidateRect(hwnd, NULL, TRUE);
+            break;
+        }
+        case WM_RBUTTONDOWN:
+        {
+            OutputDebugStringW(L"R_BUTTON!\n");
+            currentBackgroundColor = (currentBackgroundColor == RGB(255, 255, 0)) ? RGB(0, 0, 0) : RGB(255, 255, 0);
+            InvalidateRect(hwnd, NULL, TRUE);
+            break;
+        }
+        case WM_MOUSEMOVE:
+        {
+            
+        }
         default:
             return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
