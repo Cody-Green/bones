@@ -58,7 +58,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR pCmdLin
             DispatchMessage(&msg);
         }
         else {
-           /*  Sleep(1000);
+            /* Sleep(1000);
             currentBackgroundColor = (currentBackgroundColor == RGB(0, 0, 0)) ? RGB(255, 255, 255) : RGB(0, 0, 0);
             InvalidateRect(hwnd, NULL, TRUE); */
         }
@@ -87,6 +87,17 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             FillRect(hdc, &ps.rcPaint, brush);
             DeleteObject(brush);
             EndPaint(hwnd, &ps);
+        }
+        case WM_KEYDOWN:
+        {
+            switch (wParam)
+            {
+                case VK_SPACE:
+                    currentBackgroundColor = (currentBackgroundColor == RGB(0, 0, 0)) ? RGB(255, 255, 255) : RGB(0, 0, 0);
+                    InvalidateRect(hwnd, NULL, TRUE);
+                    break;
+            }
+            break;
         }
 
         default:
