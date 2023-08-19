@@ -15,12 +15,19 @@ double getCurrentTime(){
     return (double)counter.QuadPart / frequency.QuadPart;
 }
 
+void updateMousePosition(UINT mPosX, UINT mPosY){
+    MOUSE_POS_X = mPosX;
+    MOUSE_POS_Y = mPosY;
+}
+
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR pCmdLine, int nCmdShow)
 {
     const double fixedTimestep = 1.0 / 60.0;
     double accumulatedTime = 0.0;
     double previousTime = 0.0;
 
+    updateMousePosition(WIDTH/2, HEIGHT/2);
+    
     hBitmap = (HBITMAP)LoadImage(NULL, L"..\\data\\ship.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
     if (!hBitmap) {
         // Handle error, maybe print a message or exit
@@ -82,7 +89,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR pCmdLin
             {
                 accumulatedTime -= fixedTimestep;
             }
-            
+
         }
     }
     return 0;
@@ -131,6 +138,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                     currentBackgroundColor = (currentBackgroundColor == RGB(0, 0, 0)) ? RGB(255, 255, 255) : RGB(0, 0, 0);
                     InvalidateRect(hwnd, NULL, TRUE);
                     break;
+                
             }
             break;
         }
@@ -150,9 +158,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         }
         case WM_MOUSEMOVE:
         {
-            MOUSE_POS_X = LOWORD(lParam);
-            MOUSE_POS_Y = HIWORD(lParam);
-            //wprintf(L"Mouse moved to %d, %d\n", mouseX, mouseY);
+            updateMousePosition(LOWORD(lParam), HIWORD(lParam));
             break;
         }
 
