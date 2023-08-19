@@ -8,8 +8,19 @@ UINT HEIGHT = 600;
 UINT MOUSE_POS_X = 0;
 UINT MOUSE_POS_Y = 0;
 
+double getCurrentTime(){
+    LARGE_INTEGER frequency, counter;
+    QueryPerformanceFrequency(&frequency);
+    QueryPerformanceCounter(&counter);
+    return (double)counter.QuadPart / frequency.QuadPart;
+}
+
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR pCmdLine, int nCmdShow)
 {
+    const double fixedTimestep = 1.0 / 60.0;
+    double accumulatedTime = 0.0;
+    double previousTime = 0.0;
+
     hBitmap = (HBITMAP)LoadImage(NULL, L"..\\data\\ship.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
     if (!hBitmap) {
         // Handle error, maybe print a message or exit
@@ -65,6 +76,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR pCmdLin
 
             TranslateMessage(&msg);
             DispatchMessage(&msg);
+        }
+        else{
+            while (accumulatedTime >= fixedTimestep)
+            {
+                accumulatedTime -= fixedTimestep;
+            }
+            
         }
     }
     return 0;
