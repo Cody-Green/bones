@@ -1,11 +1,12 @@
 #include <windows.h>
-#include <stdio.h>
 
 HBITMAP hBitmap = NULL;
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 COLORREF currentBackgroundColor = RGB(0, 0, 0);
 UINT WIDTH = 800;
 UINT HEIGHT = 600;
+UINT MOUSE_POS_X = 0;
+UINT MOUSE_POS_Y = 0;
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR pCmdLine, int nCmdShow)
 {
@@ -94,10 +95,11 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                 BITMAP bitmap;
                 GetObject(hBitmap, sizeof(bitmap), &bitmap);
 
-                BitBlt(hdc, 0, 0, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, SRCCOPY);
+                BitBlt(hdc, MOUSE_POS_X - (bitmap.bmWidth / 2), MOUSE_POS_Y - (bitmap.bmHeight / 2), bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, SRCCOPY);
 
                 SelectObject(hdcMem, hbmOld);
                 DeleteDC(hdcMem);
+                break;
             }
 
             EndPaint(hwnd, &ps);
@@ -130,8 +132,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         }
         case WM_MOUSEMOVE:
         {
-            int mouseX = LOWORD(lParam);
-            int mouseY = HIWORD(lParam);
+            MOUSE_POS_X = LOWORD(lParam);
+            MOUSE_POS_Y = HIWORD(lParam);
             //wprintf(L"Mouse moved to %d, %d\n", mouseX, mouseY);
             break;
         }
