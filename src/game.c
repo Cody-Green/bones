@@ -1,7 +1,6 @@
 #include <windows.h>
 #include <stdio.h>
 
-
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 COLORREF currentBackgroundColor = RGB(0, 0, 0);
 UINT WIDTH = 800;
@@ -77,11 +76,21 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             return 0;
         case WM_PAINT:
         {
+            HBITMAP hBitmap = (HBITMAP)LoadImage(NULL, L"/data/ship.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hwnd, &ps);
-            HBRUSH brush = CreateSolidBrush(currentBackgroundColor);
-            FillRect(hdc, &ps.rcPaint, brush);
-            DeleteObject(brush);
+    
+            HDC hdcMem = CreateCompatibleDC(hdc);
+            HBITMAP hbmOld = (HBITMAP)SelectObject(hdcMem, hBitmap);
+
+            BITMAP bitmap;
+            GetObject(hBitmap, sizeof(bitmap), &bitmap);
+
+            BitBlt(hdc, 0, 0, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, SRCCOPY);
+
+            SelectObject(hdcMem, hbmOld);
+            DeleteDC(hdcMem);
+
             EndPaint(hwnd, &ps);
             break;
         }
