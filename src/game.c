@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <stdio.h>
 
+HBITMAP hBitmap = NULL;
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 COLORREF currentBackgroundColor = RGB(0, 0, 0);
 UINT WIDTH = 800;
@@ -8,6 +9,11 @@ UINT HEIGHT = 600;
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR pCmdLine, int nCmdShow)
 {
+    hBitmap = (HBITMAP)LoadImage(NULL, L"..\\data\\ship.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+    if (!hBitmap) {
+        // Handle error, maybe print a message or exit
+        OutputDebugStringW(L"Failed to load bitmap.\n");
+    }
     const wchar_t CLASS_NAME[]  = L"GameClass";
 
     WNDCLASSEXW wc = {0};
@@ -68,28 +74,31 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     switch (uMsg)
     {
         case WM_DESTROY:
+            DeleteObject(hBitmap);
             PostQuitMessage(0);
             return 0;
 
         case WM_CLOSE:
+            DeleteObject(hBitmap);
             DestroyWindow(hwnd);
             return 0;
         case WM_PAINT:
         {
-            HBITMAP hBitmap = (HBITMAP)LoadImage(NULL, L"/data/ship.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hwnd, &ps);
     
-            HDC hdcMem = CreateCompatibleDC(hdc);
-            HBITMAP hbmOld = (HBITMAP)SelectObject(hdcMem, hBitmap);
+            if (hBitmap) { // Only try to draw if the bitmap was loaded successfully
+                HDC hdcMem = CreateCompatibleDC(hdc);
+                HBITMAP hbmOld = (HBITMAP)SelectObject(hdcMem, hBitmap);
 
-            BITMAP bitmap;
-            GetObject(hBitmap, sizeof(bitmap), &bitmap);
+                BITMAP bitmap;
+                GetObject(hBitmap, sizeof(bitmap), &bitmap);
 
-            BitBlt(hdc, 0, 0, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, SRCCOPY);
+                BitBlt(hdc, 0, 0, bitmap.bmWidth, bitmap.bmHeight, hdcMem, 0, 0, SRCCOPY);
 
-            SelectObject(hdcMem, hbmOld);
-            DeleteDC(hdcMem);
+                SelectObject(hdcMem, hbmOld);
+                DeleteDC(hdcMem);
+            }
 
             EndPaint(hwnd, &ps);
             break;
@@ -123,11 +132,12 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         {
             int mouseX = LOWORD(lParam);
             int mouseY = HIWORD(lParam);
-            wprintf(L"Mouse moved to %d, %d\n", mouseX, mouseY);
+            //wprintf(L"Mouse moved to %d, %d\n", mouseX, mouseY);
             break;
         }
 
         default:
+            //DeleteObject(hBitmap);
             return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
     return 0;
